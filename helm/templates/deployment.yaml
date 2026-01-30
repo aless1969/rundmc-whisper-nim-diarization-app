@@ -1,15 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "secure-code.fullname" . }}
+  name: {{ include "rundmc-whisper-nim-diarization-app.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "secure-code.labels" . | nindent 4 }}
+    {{- include "rundmc-whisper-nim-diarization-app.name" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "secure-code.selectorLabels" . | nindent 6 }}
+      {{- include include "rundmc-whisper-nim-diarization-app.name" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -17,7 +17,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "secure-code.selectorLabels" . | nindent 8 }}
+        {{- include "rundmc-whisper-nim-diarization-app.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

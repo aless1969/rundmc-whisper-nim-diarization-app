@@ -1,14 +1,14 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "secure-code.name" -}}
+{{- define "rundmc-whisper-nim-diarization-app.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Create a default fully qualified app name.
 */}}
-{{- define "secure-code.fullname" -}}
+{{- define "rundmc-whisper-nim-diarization-app.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -24,16 +24,16 @@ Create a default fully qualified app name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "secure-code.chart" -}}
+{{- define "rundmc-whisper-nim-diarization-app.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "secure-code.labels" -}}
-helm.sh/chart: {{ include "secure-code.chart" . }}
-{{ include "secure-code.selectorLabels" . }}
+{{- define "rundmc-whisper-nim-diarization-app.labels" -}}
+helm.sh/chart: {{ include "rundmc-whisper-nim-diarization-app.chart" . }}
+{{ include "rundmc-whisper-nim-diarization-app.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -43,18 +43,18 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "secure-code.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "secure-code.name" . }}
+{{- define "rundmc-whisper-nim-diarization-app.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "rundmc-whisper-nim-diarization-app.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-app: {{ include "secure-code.name" . }}
+app: {{ include "rundmc-whisper-nim-diarization-app.name" . }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "secure-code.serviceAccountName" -}}
+{{- define "rundmc-whisper-nim-diarization-app.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "secure-code.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "rundmc-whisper-nim-diarization-app.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

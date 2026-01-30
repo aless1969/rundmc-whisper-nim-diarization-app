@@ -2,7 +2,7 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "secure-code.fullname" . }}
+  name: {{ include "rundmc-whisper-nim-diarization-app.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "secure-code.labels" . | nindent 4 }}
@@ -10,7 +10,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "secure-code.fullname" . }}
+    name: {{ include "rundmc-whisper-nim-diarization-app.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:
@@ -31,3 +31,4 @@ spec:
           averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
     {{- end }}
 {{- end }}
+

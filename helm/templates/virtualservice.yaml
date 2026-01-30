@@ -1,11 +1,11 @@
 {{- if .Values.ezua.enabled }}
-apiVersion: networking.istio.io/v1beta1
+apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: {{ include "secure-code.fullname" . }}
+  name: {{ include "rundmc-whisper-nim-diarization-app.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "secure-code.labels" . | nindent 4 }}
+    {{- include "rundmc-whisper-nim-diarization-app.labels" . | nindent 4 }}
     hpe-ezua/type: vendor-service
 spec:
   gateways:
@@ -18,7 +18,7 @@ spec:
             prefix: /
       route:
         - destination:
-            host: {{ include "secure-code.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+            host: {{ include "rundmc-whisper-nim-diarization-app.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
             port:
               number: {{ .Values.service.port }}
       timeout: 300s

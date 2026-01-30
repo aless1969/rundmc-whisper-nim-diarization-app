@@ -2,10 +2,10 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "secure-code.fullname" . }}
+  name: {{ include "rundmc-whisper-nim-diarization-app.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "secure-code.labels" . | nindent 4 }}
+    {{- include "rundmc-whisper-nim-diarization-app.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -34,7 +34,7 @@ spec:
             pathType: {{ .pathType }}
             backend:
               service:
-                name: {{ include "secure-code.fullname" $ }}
+                name: {{ include "rundmc-whisper-nim-diarization-app.fullname" $ }}
                 port:
                   number: {{ $.Values.service.port }}
           {{- end }}
