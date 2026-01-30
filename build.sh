@@ -4,7 +4,7 @@
 set -e
 
 # Configuration
-IMAGE_NAME="${IMAGE_NAME:-alessandrahpe/rundmc-whisper-nim-diarization-app}"
+IMAGE_NAME="${IMAGE_NAME:-aless1969/rundmc-whisper-nim-diarization-app}"
 IMAGE_TAG="${IMAGE_TAG:-1.0.0}"
 
 echo "🔨 Building rundmc-whisper-nim-diarization-app image..."

@@ -8,7 +8,7 @@ RELEASE_NAME="${RELEASE_NAME:-rundmc-whisper-nim-diarization-app}"
 NAMESPACE="${NAMESPACE:-default}"
 VALUES_FILE="${VALUES_FILE:-values.yaml}"
 
-echo "🚀 Installing Code Scanner..."
+echo "🚀 Installing rundmc-whisper-nim-diarization-app..."
 echo "   Release: ${RELEASE_NAME}"
 echo "   Namespace: ${NAMESPACE}"
 echo ""

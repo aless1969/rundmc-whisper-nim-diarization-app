@@ -1,32 +1,38 @@
-# 🔒 Code Security Scanner
+# 🔒 trascrizione automatica e diarizzazione speaker
 
-מערכת לבדיקת קוד לחולשות אבטחה ובעיות באמצעות LLM.
+# rundmc-whisper-nim-diarization-app
 
-## תכונות
+## Descrizione
 
-- ✅ העלאת קוד ידנית או מקובץ
-- ✅ תמיכה במגוון שפות תכנות
-- ✅ זיהוי אוטומטי של שפת התכנות
-- ✅ חיבור לכל LLM endpoint (OpenAI-compatible)
-- ✅ **Endpoint וטוקן ניתנים לשינוי בזמן אמת דרך ה-UI**
-- ✅ אפשרות להתאמה אישית של ה-prompt
-- ✅ תמיכה בעברית
-- ✅ Helm Chart עם תמיכה ב-Istio/EZUA
+**rundmc-whisper-nim-diarization-app** è una soluzione  per la trascrizione e diarizzazione automatica di contenuti audio, basata su AI.  
+Tutte le funzionalità della soluzione sono fruibili via **GUI**, **CLI** e **REST API** (con documentazione Swagger)
 
-## מבנה הפרויקט
+---
 
-```
-code-scanner/
-├── app.py              # אפליקציית Gradio
-├── requirements.txt    # תלויות Python
-├── Dockerfile          # בניית Docker image
-├── build.sh           # סקריפט בנייה
-├── install.sh         # סקריפט התקנה
-├── README.md          # תיעוד
-└── helm/              # Helm Chart
-    ├── Chart.yaml
+## Funzionalità
+
+- **Upload audio** (wav/mp3) via REST API, CLI o GUI
+- **Trascrizione automatica** di file audio con Whisper
+- **Diarizzazione speaker** (identificazione dei diversi speaker) con pyannote.audio
+- **Risposta JSON**: transcript + segmenti speaker - (in vari formati (JSON, TXT, CSV))
+- **Documentazione API**: Swagger/OpenAPI disponibile su `/docs`
+
+---
+
+## Struttura progetto
+
+rundmc-whisper-nim-diarization-app/
+│
+├── Dockerfile
+├── requirements.txt
+├── app.py
+├── README.md
+├── build.sh
+├── install.sh
+├── helm/
+    |── Chart.yaml
     ├── values.yaml
-    ├── values-pcai.yaml   # הגדרות לסביבת HPE PCAI
+    ├── values-pcai.yaml   
     └── templates/
         ├── _helpers.tpl
         ├── deployment.yaml
@@ -34,150 +40,89 @@ code-scanner/
         ├── virtualservice.yaml  # Istio/EZUA
         ├── ingress.yaml
         ├── hpa.yaml
-        └── NOTES.txt
-```
 
-## הרצה מקומית
+### REST API
+
+# Chiamata esempio: sh
+curl -X POST "http://localhost:8010/api/v1/transcribe" -F audio=@file.wav
+
+
 
 ```bash
-# התקנת dependencies
+# 1. Installa le dipendenze
 pip install -r requirements.txt
 
 # הרצה
 python app.py
 
-# או עם הגדרות ברירת מחדל:
-LLM_ENDPOINT="http://localhost:8000/v1/chat/completions" \
-LLM_MODEL="llama3" \
-python app.py
-```
 
-פתח בדפדפן: http://localhost:7860
 
-## הרצה עם Docker
+Apri nel browser  http://localhost:8010
+
+## Docker
 
 ```bash
-# בניית image
+# image
 ./build.sh
 
-# או ידנית:
-docker build -t code-scanner:1.0.0 .
+# docker
+docker build -t rundmc-whisper-nim-diarization-app:1.0.0 .
 
-# הרצה
-docker run -p 7860:7860 \
-  -e LLM_ENDPOINT="http://your-llm:8000/v1/chat/completions" \
-  -e LLM_MODEL="llama3" \
-  code-scanner:1.0.0
-```
 
-## פריסה על Kubernetes עם Helm
+docker run -p 8010:8010 rundmc-whisper-nim-diarization-app:latest
 
-### התקנה בסיסית
-
+###  Kubernetes on helm
 ```bash
 cd helm
 
-# ערוך את values.yaml עם ההגדרות שלך
+# values.yaml 
 nano values.yaml
 
-# התקנה
-helm install code-scanner . -n your-namespace
+# helm install
+helm install rundmc-whisper-nim-diarization-app . -n your-namespace
 ```
 
-### התקנה על HPE PCAI
+### HPE PCAI
 
 ```bash
 cd helm
 
-# ערוך את values-pcai.yaml
+# values-pcai
+
 nano values-pcai.yaml
 
-# התקנה עם הגדרות PCAI
-helm install code-scanner . \
+# PCAI
+
+helm install rundmc-whisper-nim-diarization-app . \
   -n your-namespace \
   -f values-pcai.yaml
+
+
+# values
+helm upgrade rundmc-whisper-nim-diarization-app . -n your-namespace -f values.yaml
 ```
 
-### עדכון הגדרות
 
-```bash
-# עדכון endpoint
-helm upgrade code-scanner . \
-  -n your-namespace \
-  --set app.env.LLM_ENDPOINT="http://new-llm:8000/v1/chat/completions"
 
-# או עדכון מקובץ values
-helm upgrade code-scanner . -n your-namespace -f values.yaml
-```
-
-## שימוש
-
-1. **הגדר endpoint** - הזן את כתובת ה-LLM API שלך (ניתן לשנות בכל עת!)
-   - דוגמאות:
-     - OpenAI: `https://api.openai.com/v1/chat/completions`
-     - Local LLM: `http://localhost:8000/v1/chat/completions`
-     - HPE PCAI: `http://llama-service.namespace.svc.cluster.local:8000/v1/chat/completions`
-
-2. **הזן token** - אם נדרש אימות (ניתן לשנות בכל עת!)
-
-3. **בחר model** - שם המודל (llama3, gpt-4, mistral, וכו')
-
-4. **בחר שפת תכנות** - או השאר על Auto-detect
-
-5. **הזן/העלה קוד** - הדבק קוד או העלה קובץ
-
-6. **לחץ "נתח קוד"** - וקבל ניתוח מפורט
-
-## Endpoints נתמכים
-
-המערכת תומכת בכל API שמקבל פורמט OpenAI-compatible:
 
 ```json
+
 {
-  "model": "...",
-  "messages": [
-    {"role": "user", "content": "..."}
+  "text": "...",
+  "speakers": [
+    {"id": 1, "start": 0.0, "end": 10.5},
+    {"id": 2, "start": 10.6, "end": 22.9}
   ]
 }
-```
 
-## משתני סביבה
 
-| משתנה | תיאור | ברירת מחדל |
-|-------|-------|------------|
-| `LLM_ENDPOINT` | כתובת ה-LLM API | ריק |
-| `LLM_TOKEN` | טוקן אימות | ריק |
-| `LLM_MODEL` | שם המודל | llama3 |
 
-**הערה:** כל ההגדרות ניתנות לשינוי גם דרך ה-UI בזמן אמת!
-
-## התאמה אישית
-
-ניתן להגדיר prompt מותאם אישית לבדיקות ספציפיות:
-- Code review כללי
-- בדיקת ביצועים
-- תאימות לסטנדרטים
-- בדיקת תיעוד
-
-## דוגמאות לחולשות שהמערכת מזהה
-
-- SQL Injection
-- XSS (Cross-Site Scripting)
-- Hardcoded credentials
-- Command injection
-- Path traversal
-- Insecure deserialization
-- Missing input validation
-- Error handling issues
-
-## Istio / EZUA Configuration
-
-המערכת כוללת תמיכה מלאה ב-Istio VirtualService:
+## Istio / EZUA Configuration Istio VirtualService:
 
 ```yaml
 ezua:
   enabled: true
   virtualService:
-    endpoint: "code-scanner.apps.your-domain.com"
+    endpoint: "rundmc-whisper-nim-diarization-app.apps.your-domain.com"
     istioGateway: "istio-system/ezaf-gateway"
 ```
