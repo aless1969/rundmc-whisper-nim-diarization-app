@@ -119,10 +119,8 @@ helm upgrade rundmc-whisper-nim-diarization-app . -n your-namespace -f values.ya
 
 ## Istio / EZUA Configuration Istio VirtualService:
 
-```yaml
 ezua:
   enabled: true
   virtualService:
     endpoint: "rundmc-whisper-nim-diarization-app.apps.your-domain.com"
     istioGateway: "istio-system/ezaf-gateway"
-```
