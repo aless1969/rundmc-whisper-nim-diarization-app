@@ -1,0 +1,51 @@
+# values-pcai.yaml
+# Sample configuration for HPE Private Cloud AI
+# =============================================
+
+# Image configuration
+image:
+  repository: alessandrahpe/secure-code
+  tag: "1.0.0"
+  pullPolicy: Always
+
+# Application configuration
+app:
+  port: 7860
+  env:
+    # LLM Endpoint - Update with your LLM service URL
+    # Example for local LLM:
+    LLM_ENDPOINT: "http://llama-service.your-namespace.svc.cluster.local:8000/v1/chat/completions"
+    # Example for external LLM:
+    # LLM_ENDPOINT: "https://api.openai.com/v1/chat/completions"
+    
+    # API Token (leave empty if not required)
+    LLM_TOKEN: ""
+    
+    # Model name
+    LLM_MODEL: "llama3"
+
+# Resource limits for PCAI
+resources:
+  requests:
+    cpu: "200m"
+    memory: "512Mi"
+  limits:
+    cpu: "2000m"
+    memory: "2Gi"
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 7860
+
+# EZUA / Istio configuration for PCAI
+ezua:
+  enabled: true
+  virtualService:
+    # Update with your domain
+    endpoint: "secure-code.hpepcai.demo.local"
+    istioGateway: "istio-system/ezaf-gateway"
+
+# Disable standard ingress (using Istio instead)
+ingress:
+  enabled: false

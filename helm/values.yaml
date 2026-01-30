@@ -1,0 +1,110 @@
+# Code Scanner Helm Chart Values
+# ================================
+
+# Image configuration
+image:
+  repository: alessandrahpe/secure-code
+  tag: "1.0.0"
+  pullPolicy: IfNotPresent
+
+# Image pull secrets (if using private registry)
+imagePullSecrets: []
+# - name: my-registry-secret
+
+# Number of replicas
+replicaCount: 1
+
+# Pod annotations
+podAnnotations: {}
+
+# Pod security context
+podSecurityContext: {}
+
+# Container security context
+securityContext: {}
+
+# Application configuration
+app:
+  # Port for Gradio UI
+  port: 7860
+  
+  # LLM Configuration - these are defaults, can be changed in UI
+  env:
+    # LLM Endpoint URL (OpenAI-compatible)
+    LLM_ENDPOINT: ""
+    # LLM API Token (leave empty if not required)
+    LLM_TOKEN: ""
+    # LLM Model name
+    LLM_MODEL: "llama3"
+
+# Resource limits
+resources:
+  requests:
+    cpu: "100m"
+    memory: "256Mi"
+  limits:
+    cpu: "1000m"
+    memory: "1Gi"
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 7860
+
+# EZUA / Istio configuration
+ezua:
+  enabled: true
+  virtualService:
+    # The external hostname for the service
+    # Example: code-scanner.apps.pcai.example.com
+    endpoint: "secure-code.${DOMAIN_NAME}"
+    # The Istio gateway to bind to
+    istioGateway: "istio-system/ezaf-gateway"
+
+# Standard Ingress (alternative to Istio)
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: secure-code.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+# Node selector
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity
+affinity: {}
+
+# Liveness probe
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+# Readiness probe
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+# Autoscaling
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80

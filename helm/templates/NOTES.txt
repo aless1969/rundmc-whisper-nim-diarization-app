@@ -1,0 +1,43 @@
+🔒 Code Security Scanner deployed successfully!
+===============================================
+
+{{- if .Values.ezua.enabled }}
+
+📌 Access via Istio/EZUA:
+   URL: https://{{ .Values.ezua.virtualService.endpoint }}
+
+{{- else if .Values.ingress.enabled }}
+
+📌 Access via Ingress:
+{{- range $host := .Values.ingress.hosts }}
+   URL: http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}
+{{- end }}
+
+{{- else }}
+
+📌 Access via port-forward:
+   kubectl port-forward -n {{ .Release.Namespace }} svc/{{ include "secure-code.fullname" . }} 7860:{{ .Values.service.port }}
+   
+   Then open: http://localhost:7860
+
+{{- end }}
+
+📊 Check status:
+   kubectl get pods -n {{ .Release.Namespace }} -l app={{ include "secure-code.name" . }}
+   kubectl logs -n {{ .Release.Namespace }} -l app={{ include "secure-code.name" . }} -f
+
+⚙️ Configuration:
+   - LLM Endpoint and Token can be changed in the UI
+   - Or set via values.yaml: app.env.LLM_ENDPOINT, app.env.LLM_TOKEN
+
+🔧 Useful commands:
+   # View logs
+   kubectl logs -n {{ .Release.Namespace }} -l app={{ include "secure-code.name" . }} -f
+   
+   # Restart deployment
+   kubectl rollout restart deployment/{{ include "secure-code.fullname" . }} -n {{ .Release.Namespace }}
+   
+   # Check VirtualService (if using Istio)
+   kubectl get virtualservice -n {{ .Release.Namespace }}
+
+Happy scanning! 🎉

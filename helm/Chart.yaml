@@ -1,0 +1,15 @@
+apiVersion: v2
+name: rundmc-whisper-nim-diarization-app
+description: Microservizio AI per trascrizione e diarizzazione audio
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - fastapi
+  - whisper
+  - diarization
+  - rundmc
+  - nim
+  - kubernetes
+maintainers:
+  - name: Alessandra
