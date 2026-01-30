@@ -1,11 +1,64 @@
-# Code Scanner Helm Chart Values
+# rundmc-whisper-nim-diarization-app Helm Chart Values
 # ================================
 
 # Image configuration
+
 image:
-  repository: alessandrahpe/secure-code
+  repository: aless1969/rundmc-whisper-nim-diarization-app
   tag: "1.0.0"
   pullPolicy: IfNotPresent
+
+# Service Configuration
+service:
+  type: ClusterIP
+  port: 8080
+
+# EZUA / Istio configuration
+ezua:
+  enabled: true
+  virtualService:
+    # The external hostname for the service
+    # Example: code-scanner.apps.pcai.example.com
+    endpoint: "rundmc-whisper-nim-diarization-app.${DOMAIN_NAME}"
+    # The Istio gateway to bind to
+    istioGateway: "istio-system/ezaf-gateway"
+
+env:
+  # Variabili d'ambiente custom (se servono)
+  WHISPER_MODEL: "base"
+  PYANNOTE_MODEL: "diarization@2.1"
+  # Altre variabili...
+
+# Resource limits
+# resources:
+# requests:
+#  cpu: "100m"
+#   memory: "256Mi"
+# limits:
+#   cpu: "1000m"
+#   memory: "1Gi"
+
+# Copiato da Liav 
+resources:
+  requests:
+    cpu: "500m"
+    memory: "1Gi"
+  limits:
+    cpu: "2"
+    memory: "4Gi"
+
+
+# Standard Ingress (alternative to Istio)
+ingress:
+  enabled: false
+  className: ""
+  hosts:
+    - host: rundmc-whisper-demo.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
 
 # Image pull secrets (if using private registry)
 imagePullSecrets: []
@@ -25,53 +78,9 @@ securityContext: {}
 
 # Application configuration
 app:
-  # Port for Gradio UI
-  port: 7860
-  
-  # LLM Configuration - these are defaults, can be changed in UI
-  env:
-    # LLM Endpoint URL (OpenAI-compatible)
-    LLM_ENDPOINT: ""
-    # LLM API Token (leave empty if not required)
-    LLM_TOKEN: ""
-    # LLM Model name
-    LLM_MODEL: "llama3"
+  # Port for Uvicorn
+  port: 8010
 
-# Resource limits
-resources:
-  requests:
-    cpu: "100m"
-    memory: "256Mi"
-  limits:
-    cpu: "1000m"
-    memory: "1Gi"
-
-# Service configuration
-service:
-  type: ClusterIP
-  port: 7860
-
-# EZUA / Istio configuration
-ezua:
-  enabled: true
-  virtualService:
-    # The external hostname for the service
-    # Example: code-scanner.apps.pcai.example.com
-    endpoint: "secure-code.${DOMAIN_NAME}"
-    # The Istio gateway to bind to
-    istioGateway: "istio-system/ezaf-gateway"
-
-# Standard Ingress (alternative to Istio)
-ingress:
-  enabled: false
-  className: ""
-  annotations: {}
-  hosts:
-    - host: secure-code.local
-      paths:
-        - path: /
-          pathType: Prefix
-  tls: []
 
 # Node selector
 nodeSelector: {}

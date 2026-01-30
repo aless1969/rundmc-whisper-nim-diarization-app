@@ -4,25 +4,19 @@
 
 # Image configuration
 image:
-  repository: alessandrahpe/secure-code
+  repository: aless1969/rundmc-whisper-nim-diarization-app
   tag: "1.0.0"
   pullPolicy: Always
 
 # Application configuration
 app:
-  port: 7860
+  port: 8010   # for uvicorn
   env:
-    # LLM Endpoint - Update with your LLM service URL
-    # Example for local LLM:
-    LLM_ENDPOINT: "http://llama-service.your-namespace.svc.cluster.local:8000/v1/chat/completions"
-    # Example for external LLM:
-    # LLM_ENDPOINT: "https://api.openai.com/v1/chat/completions"
-    
-    # API Token (leave empty if not required)
-    LLM_TOKEN: ""
+    # Example for local whisper model:
+    #ENDPOINT: "http://whisper-large-v3.namespace.svc.cluster.local:8010"
     
     # Model name
-    LLM_MODEL: "llama3"
+    NIM_MODEL_NAME: "whisper-large-v3"
 
 # Resource limits for PCAI
 resources:
@@ -43,7 +37,7 @@ ezua:
   enabled: true
   virtualService:
     # Update with your domain
-    endpoint: "secure-code.hpepcai.demo.local"
+    endpoint: "rundmc-whisper-nim-diarization-app.hpepcai.demo.local"
     istioGateway: "istio-system/ezaf-gateway"
 
 # Disable standard ingress (using Istio instead)
